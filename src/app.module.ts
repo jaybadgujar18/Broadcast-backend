@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { OtpModule } from './otp/otp.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    AuthModule,
+    OtpModule,
+    ConfigModule.forRoot({ isGlobal: true }), // Load .env file globally
+    MongooseModule.forRoot(process.env.MONGODB_URI as string), // Connect to MongoDB Atlas
+    DatabaseModule,
+  ],
 })
 export class AppModule {}
