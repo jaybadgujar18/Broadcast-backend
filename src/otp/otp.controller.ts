@@ -6,7 +6,13 @@ export class OtpController {
     constructor(private otpService: OtpService) { }
 
     @Post('send')
-    async send(@Body('email') email: string) {
-        return this.otpService.sendotp(email);
+    async send(
+        @Body()
+        body: {
+            email: string;
+            method: string
+        }
+    ) {
+        return this.otpService.sendotp(body);
     }
 }

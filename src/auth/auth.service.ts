@@ -2,13 +2,15 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './user.interface'; // We'll define this next
+import { Otp } from '../otp/otp.interface';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectModel('User') private readonly userModel: Model<User>
+        @InjectModel('User') private readonly userModel: Model<User>,
+        @InjectModel('Otp') private readonly otpModel: Model<Otp>,
     ) { }
 
     async signup(userData: {
@@ -41,7 +43,7 @@ export class AuthService {
         return { message: 'User registered successfully' };
     }
 
-    async signin(email: string, password: string) {
+    async signin(email: string, password: string, otp: string) {
         const user = await this.userModel.findOne({ email });
 
         if (!user) {
@@ -53,12 +55,24 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        
+        const verifyOtp = await this.otpModel.findOne({ email });
 
-        console.log(process.env.JWT_SECRET)
+        if (!verifyOtp) {
+            throw new BadRequestException('OTP is expired or not generated.');
+        }
+
+        if (verifyOtp.otp !== otp) {
+            throw new BadRequestException('OTP is incorrect');
+        }
+
+        // OTP is valid → delete it so it can't be reused
+        await this.otpModel.deleteMany({ email });
+
         const payload = { _id: user._id };
-        const token = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '7d' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+            expiresIn: '7d',
+        });
 
-        return { token, userType: "admin" };
+        return { token, userType: user.role };
     }
 }

@@ -19,7 +19,14 @@ export class AuthController {
     }
 
     @Post('signin')
-    signin(@Body() body: { email: string; password: string }) {
-        return this.authService.signin(body.email, body.password)
+    signin(
+        @Body()
+        body: {
+            email: string;
+            password: string;
+            otp: string;
+        }
+    ) {
+        return this.authService.signin(body.email, body.password, body.otp)
     }
 }
