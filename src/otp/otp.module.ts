@@ -14,4 +14,4 @@ import { AuthModule } from 'src/auth/auth.module';
   providers: [OtpService],
   exports: [MongooseModule, OtpService], // ✅ export OtpService if used in AuthModule
 })
-export class OtpModule { }
+export class OtpModule {}

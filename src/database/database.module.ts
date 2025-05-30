@@ -6,5 +6,4 @@ import { DatabaseService } from './database.service';
   providers: [DatabaseService],
   // exports: [DatabaseService], // Export if you want to use it elsewhere
 })
-
 export class DatabaseModule {}

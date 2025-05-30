@@ -3,16 +3,16 @@ import { OtpService } from './otp.service';
 
 @Controller('otp')
 export class OtpController {
-    constructor(private otpService: OtpService) { }
+  constructor(private otpService: OtpService) {}
 
-    @Post('send')
-    async send(
-        @Body()
-        body: {
-            email: string;
-            method: string
-        }
-    ) {
-        return this.otpService.sendotp(body);
-    }
+  @Post('send')
+  async send(
+    @Body()
+    body: {
+      email: string;
+      method: string;
+    },
+  ) {
+    return this.otpService.sendotp(body);
+  }
 }

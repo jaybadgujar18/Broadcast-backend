@@ -4,7 +4,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 
 @Injectable()
 export class AppService implements OnModuleInit {
-  constructor(@InjectConnection() private readonly connection: Connection) { }
+  constructor(@InjectConnection() private readonly connection: Connection) {}
 
   async onModuleInit() {
     this.connection.on('connected', () => {
@@ -17,6 +17,9 @@ export class AppService implements OnModuleInit {
 
     // Optional: list collections
     const collections = await this.connection?.db?.listCollections().toArray();
-    console.log('📦 Collections:', collections?.map(c => c.name));
+    console.log(
+      '📦 Collections:',
+      collections?.map((c) => c.name),
+    );
   }
 }

@@ -4,14 +4,20 @@ import { AuthService } from './auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './user.schema';
 import { OtpModule } from 'src/otp/otp.module';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-    forwardRef(() => OtpModule), // ✅ use forwardRef here too
+    forwardRef(() => OtpModule),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '7d' },
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [MongooseModule, AuthService], // ✅ export AuthService if used
+  providers: [AuthService, JwtStrategy],
+  exports: [MongooseModule, AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}
