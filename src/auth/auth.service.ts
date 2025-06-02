@@ -80,7 +80,7 @@ export class AuthService {
   async getUser(userId: string) {
     const user = await this.userModel
       .findById(userId)
-      .select('email whatsappNumber userName');
+      .select('email whatsappNumber userName role');
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
